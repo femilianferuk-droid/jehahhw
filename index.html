@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Glow Crash Arena</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@700;900&display=swap');
+
+        :root {
+            --bg-dark: #06080c;
+            --card-bg: rgba(13, 18, 29, 0.75);
+            --border-ui: rgba(255, 255, 255, 0.07);
+            --accent-glow: #00ffaa;
+            --accent-purple: #7f56d9;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --neon-red: #ff3366;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            background-image: 
+                radial-gradient(circle at 50% -20%, rgba(127, 86, 217, 0.18) 0%, transparent 50%),
+                radial-gradient(circle at 0% 100%, rgba(0, 255, 170, 0.05) 0%, transparent 40%);
+            padding: 16px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .glass-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-ui);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 28px;
+            padding: 20px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255,255,255,0.05);
+        }
+
+        /* Профиль верхняя панель */
+        .header-profile {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .user-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--accent-purple), #4c1d95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 4px 14px rgba(127, 86, 217, 0.3);
+            color: white;
+        }
+
+        .user-name {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.4px;
+        }
+
+        .user-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .balance-badge {
+            background: rgba(0, 255, 170, 0.06);
+            border: 1px solid rgba(0, 255, 170, 0.15);
+            padding: 10px 16px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .balance-val {
+            font-weight: 800;
+            color: var(--accent-glow);
+            font-size: 16px;
+        }
+
+        /* Игровой экран Crash */
+        .crash-viewport {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.03);
+            margin-bottom: 16px;
+        }
+
+        #crashCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .multiplier-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 44px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            pointer-events: none;
+            text-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        /* Форма ввода ставки */
+        .controls-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-ui);
+            border-radius: 16px;
+            padding: 2px;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 16px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .input-label {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, var(--accent-purple), #6366f1);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 18px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(127, 86, 217, 0.3);
+        }
+
+        .btn-action:active {
+            transform: scale(0.97);
+        }
+
+        .btn-action.take-cash {
+            background: linear-gradient(135deg, var(--accent-glow), #059669);
+            color: #022c19;
+            box-shadow: 0 4px 20px rgba(0, 255, 170, 0.3);
+        }
+
+        /* Лидерборд переключатели */
+        .tabs-nav {
+            display: flex;
+            background: rgba(0,0,0,0.3);
+            padding: 4px;
+            border-radius: 14px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 10px;
+        }
+
+        .tab-item.active {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+        }
+
+        /* Сетки таблиц */
+        .leader-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            font-size: 14px;
+        }
+
+        .leader-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rank-num {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            color: var(--text-muted);
+            width: 22px;
+        }
+
+        .leader-row:nth-child(1) .rank-num { color: #f59e0b; }
+        .leader-row:nth-child(2) .rank-num { color: #cbd5e1; }
+        .leader-row:nth-child(3) .rank-num { color: #b45309; }
+
+        .shake { animation: shake 0.25s ease-in-out; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container" id="appBody">
+        
+        <div class="glass-panel header-profile">
+            <div class="user-meta">
+                <div class="user-avatar" id="avatarBox">?</div>
+                <div>
+                    <div class="user-name" id="nameBox">Синхронизация...</div>
+                    <div class="user-sub" id="gamesBox">Сыграно: 0</div>
+                </div>
+            </div>
+            <div class="balance-badge">
+                <span class="balance-val" id="balanceBox">0</span>
+                <span style="font-size:14px">⭐</span>
+            </div>
+        </div>
+
+        <div class="glass-panel">
+            <div class="crash-viewport">
+                <canvas id="crashCanvas"></canvas>
+                <div class="multiplier-display" id="multDisplay">1.00x</div>
+            </div>
+
+            <div class="controls-grid">
+                <div class="input-wrapper">
+                    <input type="number" id="betInput" value="100" min="10">
+                    <div class="input-label">СТАВКА</div>
+                </div>
+                <button class="btn-action" id="actionBtn" onclick="handleAction()">ПОСТАВИТЬ СТАВКУ</button>
+            </div>
+        </div>
+
+        <div class="glass-panel">
+            <div class="tabs-nav">
+                <div class="tab-item active" id="tabB" onclick="switchTab('balance')">Топ по звездам</div>
+                <div class="tab-item" id="tabG" onclick="switchTab('games')">Топ по активу</div>
+            </div>
+            <div id="leaderboardContent">Загрузка топа...</div>
+        </div>
+
+    </div>
+
+    <script>
+        const tg = window.Telegram?.WebApp;
+        let userId = 99999; 
+        let username = "Demo_User";
+        
+        // Автоматически вытаскиваем данные сессии из TG Mini App
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            tg.ready();
+            tg.expand();
+            userId = tg.initDataUnsafe.user.id;
+            username = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "User";
+        }
+
+        let localBalance = 0;
+        let gameStatus = "idle"; 
+        let currentMultiplier = 1.00;
+        let crashPoint = 1.00;
+        let betAmount = 100;
+        let animationFrameId = null;
+        let startTime = 0;
+        let leadersData = { balance: [], games: [] };
+
+        const canvas = document.getElementById('crashCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth * window.devicePixelRatio;
+            canvas.height = canvas.parentElement.clientHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Синхронизация данных с бэкендом Vercel Serverless
+        async function syncData() {
+            try {
+                const response = await fetch('/api/user/sync', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, username: username })
+                });
+                
+                if (!response.ok) throw new Error("Сервер не отвечает");
+                const data = await response.json();
+                
+                localBalance = parseFloat(data.user.balance);
+                document.getElementById('balanceBox').innerText = Math.floor(localBalance).toLocaleString();
+                
+                let displayName = data.user.username ? '@' + data.user.username : username;
+                document.getElementById('nameBox').innerText = displayName;
+                document.getElementById('avatarBox').innerText = displayName.replace('@','').charAt(0).toUpperCase();
+                document.getElementById('gamesBox').innerText = 'Сыграно: ' + (data.user.games_played || 0);
+
+                leadersData.balance = data.leaderboard_balance || [];
+                leadersData.games = data.leaderboard_games || [];
+                
+                renderLeaderboard('balance');
+            } catch (e) { 
+                console.error("Ошибка синхронизации:", e);
+                document.getElementById('nameBox').innerText = "Ошибка соединения";
+                document.getElementById('nameBox').style.color = "var(--neon-red)";
+            }
+        }
+
+        function renderLeaderboard(type) {
+            const container = document.getElementById('leaderboardContent');
+            container.innerHTML = "";
+            const list = type === 'balance' ? leadersData.balance : leadersData.games;
+            
+            if (!list || list.length === 0) {
+                container.innerHTML = "<div style='color:var(--text-muted); text-align:center; font-size:13px;'>Нет данных</div>";
+                return;
+            }
+
+            list.forEach((item, index) => {
+                const isMe = item.user_id == userId;
+                const row = document.createElement('div');
+                row.className = 'leader-row';
+                if(isMe) row.style.background = 'rgba(255,255,255,0.04)';
+                
+                const val = type === 'balance' ? Math.floor(item.balance).toLocaleString() + ' ⭐️' : (item.games_played || 0) + ' игр';
+                row.innerHTML = `
+                    <div class="leader-left">
+                        <span class="rank-num">${index + 1}</span>
+                        <span>${item.username ? '@' + item.username : 'ID: ' + item.user_id.toString().substring(0,5)}</span>
+                    </div>
+                    <span style="font-weight:700; color:${type === 'balance' ? 'var(--accent-glow)' : 'var(--text-main)'}">${val}</span>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function switchTab(type) {
+            document.getElementById('tabB').classList.toggle('active', type === 'balance');
+            document.getElementById('tabG').classList.toggle('active', type === 'games');
+            renderLeaderboard(type);
+        }
+
+        // Логика краш алгоритма: падает от 1 до 3 (85%), редко летит выше
+        function generateCrashPoint() {
+            const rand = Math.random();
+            return rand < 0.85 ? 1.00 + (Math.random() * 2.00) : 3.00 + (Math.random() * 7.00);
+        }
+
+        // Отрисовка интерактивного графика на Canvas
+        function drawGraph() {
+            const w = canvas.width / window.devicePixelRatio;
+            const h = canvas.height / window.devicePixelRatio;
+            ctx.clearRect(0, 0, w, h);
+
+            if (gameStatus === "idle") {
+                ctx.fillStyle = '#64748b';
+                ctx.font = "13px Inter";
+                ctx.fillText("Ожидание запуска...", 20, h - 20);
+                return;
+            }
+
+            const elapsed = (Date.now() - startTime) / 1000;
+            
+            if (gameStatus === "running") {
+                currentMultiplier = 1.00 + Math.pow(elapsed, 1.5) * 0.06;
+                
+                if (currentMultiplier >= crashPoint) {
+                    currentMultiplier = crashPoint;
+                    gameStatus = "crashed";
+                    document.getElementById('multDisplay').style.color = "var(--neon-red)";
+                    document.getElementById('multDisplay').innerText = "💥 " + currentMultiplier.toFixed(2) + "x";
+                    
+                    const btn = document.getElementById('actionBtn');
+                    btn.className = "btn-action";
+                    btn.innerText = "ВЗРЫВ!";
+                    
+                    document.getElementById('appBody').classList.add('shake');
+                    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
+
+                    setTimeout(() => { 
+                        document.getElementById('appBody').classList.remove('shake');
+                        resetToIdle(); 
+                    }, 2500);
+                } else {
+                    document.getElementById('multDisplay').innerText = currentMultiplier.toFixed(2) + "x";
+                }
+            }
+
+            ctx.beginPath();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = gameStatus === "crashed" ? "#ff3366" : "#00ffaa";
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = ctx.strokeStyle;
+            ctx.moveTo(0, h);
+            
+            const progressX = Math.min(w, (elapsed / 5) * w);
+            const progressY = h - Math.min(h - 30, (Math.log(currentMultiplier) / Math.log(3)) * (h - 50));
+            
+            ctx.quadraticCurveTo(progressX / 2, h, progressX, progressY);
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            if (gameStatus === "running") {
+                animationFrameId = requestAnimationFrame(drawGraph);
+            }
+        }
+
+        async function handleAction() {
+            const btn = document.getElementById('actionBtn');
+            betAmount = parseFloat(document.getElementById('betInput').value);
+
+            if (gameStatus === "idle") {
+                if (isNaN(betAmount) || betAmount <= 0 || betAmount > localBalance) {
+                    if (tg) tg.showAlert("Некорректная сумма ставки или недостаточно средств.");
+                    return;
+                }
+
+                try {
+                    const res = await fetch('/api/game/bet', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_id: userId, betAmount: betAmount })
+                    });
+                    const result = await res.json();
+
+                    if (result.success) {
+                        localBalance = result.newBalance;
+                        document.getElementById('balanceBox').innerText = Math.floor(localBalance).toLocaleString();
+                        
+                        gameStatus = "running";
+                        crashPoint = generateCrashPoint();
+                        startTime = Date.now();
+                        currentMultiplier = 1.00;
+                        
+                        document.getElementById('multDisplay').style.color = "var(--text-main)";
+                        btn.className = "btn-action take-cash";
+                        btn.innerText = "ЗАБРАТЬ ВЫИГРЫШ";
+                        
+                        if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
+                        drawGraph();
+                    }
+                } catch(err) { console.error(err); }
+            } else if (gameStatus === "running") {
+                gameStatus = "idle";
+                cancelAnimationFrame(animationFrameId);
+                
+                const winAmount = betAmount * currentMultiplier;
+                
+                try {
+                    const res = await fetch('/api/game/win', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_id: userId, winAmount: winAmount })
+                    });
+                    const result = await res.json();
+
+                    if (result.success) {
+                        if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+                        document.getElementById('multDisplay').style.color = "var(--accent-glow)";
+                        document.getElementById('multDisplay').innerText = "+" + Math.floor(winAmount) + " ⭐️";
+                        btn.className = "btn-action";
+                        btn.innerText = "УСПЕШНО НАЧИСЛЕНО";
+                        setTimeout(() => { resetToIdle(); }, 2000);
+                    }
+                } catch(err) { console.error(err); }
+            }
+        }
+
+        function resetToIdle() {
+            gameStatus = "idle";
+            currentMultiplier = 1.00;
+            document.getElementById('multDisplay').style.color = "var(--text-main)";
+            document.getElementById('multDisplay').innerText = "1.00x";
+            const btn = document.getElementById('actionBtn');
+            btn.className = "btn-action";
+            btn.innerText = "ПОСТАВИТЬ СТАВКУ";
+            syncData();
+            drawGraph();
+        }
+
+        // Инициализация при старте
+        syncData();
+        setTimeout(() => { drawGraph(); }, 200);
+    </script>
+</body>
+</html>
