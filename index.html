@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Naval Battle</title>
+    <style>
+        :root {
+            --bg: #0b0e14;
+            --panel-bg: rgba(22, 28, 45, 0.6);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --accent: #7000ff;
+            --accent-glow: rgba(112, 0, 255, 0.4);
+            --tg-blue: #24A1DE;
+            --text: #ffffff;
+            --text-muted: #6c7a9c;
+            --success: #00ff88;
+            --danger: #ff3366;
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: all 0.25s ease;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(112, 0, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 255, 136, 0.05) 0%, transparent 40%);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            width: 100%;
+            max-width: 500px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--panel-border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            margin-top: 0;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h3 {
+            font-size: 18px;
+            margin-top: 0;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* Кнопки */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            gap: 10px;
+        }
+
+        .btn-tg {
+            background-color: var(--tg-blue);
+            color: white;
+            box-shadow: 0 4px 15px rgba(36, 161, 222, 0.3);
+        }
+
+        .btn-tg:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(36, 161, 222, 0.4);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(112, 0, 255, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Секция авторизации */
+        #auth-section {
+            text-align: center;
+        }
+
+        .tg-widget-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+            min-height: 40px;
+        }
+
+        .divider {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin: 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Профиль пользователя */
+        .profile-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255,255,255,0.03);
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 25px;
+        }
+
+        .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent) 0%, #400099 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 4px 10px var(--accent-glow);
+        }
+
+        .profile-info {
+            flex-grow: 1;
+        }
+
+        .username {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .stats {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .stats span {
+            font-weight: 600;
+        }
+
+        /* Табы */
+        .tabs {
+            display: flex;
+            background: rgba(0,0,0,0.2);
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .tab.active {
+            background: var(--panel-border);
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Таблицы лидеров */
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .leaderboard-table th {
+            text-align: left;
+            padding: 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .leaderboard-table td {
+            padding: 14px 10px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .rank {
+            font-weight: 700;
+            color: var(--text-muted);
+            width: 35px;
+        }
+        
+        tr:nth-child(1) .rank { color: #ffd700; }
+        tr:nth-child(2) .rank { color: #c0c0c0; }
+        tr:nth-child(3) .rank { color: #cd7f32; }
+
+        /* Игра Морской Бой */
+        .game-card {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .game-status {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            max-width: 280px;
+            margin: 0 auto 20px auto;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .cell:hover {
+            background: rgba(112, 0, 255, 0.15);
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(112, 0, 255, 0.2);
+        }
+
+        .cell.miss {
+            background: rgba(255, 255, 255, 0.01) !important;
+            border-color: rgba(255,255,255,0.02);
+            cursor: not-allowed;
+        }
+        .cell.miss::after {
+            content: "";
+            width: 6px;
+            height: 6px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        .cell.hit {
+            background: rgba(255, 51, 102, 0.15) !important;
+            border-color: var(--danger);
+            box-shadow: 0 0 15px rgba(255, 51, 102, 0.3);
+            cursor: not-allowed;
+            animation: blowup 0.3s ease-out;
+        }
+        .cell.hit::after {
+            content: "💥";
+        }
+
+        @keyframes blowup {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- ОКНО АВТОРИЗАЦИИ -->
+    <div id="auth-section" class="glass-panel">
+        <h1>Cyber Arena</h1>
+        <div class="subtitle">Войдите, чтобы сохранить свой прогресс и попасть в топ</div>
+        
+        <div class="tg-widget-container">
+            <!-- Родной виджет. ЗАМЕНИТЕ data-telegram-login на имя вашего бота (например: my_game_bot) -->
+            <script async src="https://telegram.org/js/telegram-widget.js?22" 
+                    data-telegram-login="YOUR_BOT_USERNAME" 
+                    data-size="large" 
+                    data-onauth="onTelegramAuth(user)" 
+                    data-request-access="write"></script>
+        </div>
+
+        <div class="divider">или</div>
+        
+        <button class="btn btn-secondary" onclick="simulateLogin()">
+            ⚡ Быстрый демо-вход
+        </button>
+    </div>
+
+    <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+    <div id="main-section" class="glass-panel hidden">
+        
+        <!-- Профиль -->
+        <div class="profile-bar">
+            <div id="user-avatar" class="avatar">U</div>
+            <div class="profile-info">
+                <div id="user-name" class="username">User</div>
+                <div class="stats">
+                    Баланс: <span id="user-balance" style="color: var(--success);">0</span> 🪙 | 
+                    Побед: <span id="user-wins">0</span> 🏆
+                </div>
+            </div>
+            <button onclick="logout()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:13px;">Выйти</button>
+        </div>
+
+        <!-- Игровой Блок -->
+        <div class="game-card">
+            <h3>Морской Бой (5x5)</h3>
+            <div id="game-status" class="game-status">Загрузка радаров...</div>
+            <div id="grid" class="grid"></div>
+            <button class="btn btn-secondary" style="padding: 10px; font-size: 13px;" onclick="initGame()">Перезапустить раунд</button>
+        </div>
+
+        <!-- Таблицы лидеров -->
+        <div class="tabs">
+            <div id="tab-balance" class="tab active" onclick="switchTab('balance')">Топ Баланс</div>
+            <div id="tab-games" class="tab" onclick="switchTab('games')">Топ Победы</div>
+        </div>
+
+        <div id="leaderboard-balance">
+            <table class="leaderboard-table">
+                <thead><tr><th>#</th><th>Игрок</th><th>Баланс</th></tr></thead>
+                <tbody id="leaderboard-balance-body"></tbody>
+            </table>
+        </div>
+
+        <div id="leaderboard-games" class="hidden">
+            <table class="leaderboard-table">
+                <thead><tr><th>#</th><th>Игрок</th><th>Победы</th></tr></thead>
+                <tbody id="leaderboard-games-body"></tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        let currentUser = null;
+        
+        const mockLeaderboard = [
+            { id: 1, first_name: "Pavel Durov", balance: 85000, wins: 94 },
+            { id: 2, first_name: "Satoshi", balance: 42000, wins: 51 },
+            { id: 3, first_name: "Cyber_Gamer", balance: 14500, wins: 22 },
+            { id: 4, first_name: "Alex", balance: 6200, wins: 9 },
+        ];
+
+        // Перехват внутренней ошибки Telegram-виджета, чтобы интерфейс не ломался
+        window.addEventListener('error', function(e) {
+            if (e.message && e.message.includes('can\'t find bot')) {
+                console.warn("Telegram widget: укажите валидного бота в коде.");
+            }
+        }, true);
+
+        function onTelegramAuth(user) {
+            currentUser = {
+                id: user.id,
+                first_name: user.first_name,
+                balance: 1000,
+                wins: 0
+            };
+            loginSuccess();
+        }
+
+        function simulateLogin() {
+            currentUser = {
+                id: 999,
+                first_name: "Player_One",
+                balance: 1500,
+                wins: 3
+            };
+            loginSuccess();
+        }
+
+        function loginSuccess() {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('main-section').classList.remove('hidden');
+            
+            document.getElementById('user-name').innerText = currentUser.first_name;
+            document.getElementById('user-avatar').innerText = currentUser.first_name.charAt(0).toUpperCase();
+            
+            updateUserUI();
+            renderLeaderboards();
+            initGame();
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('auth-section').classList.remove('hidden');
+            document.getElementById('main-section').classList.add('hidden');
+        }
+
+        function updateUserUI() {
+            document.getElementById('user-balance').innerText = currentUser.balance.toLocaleString();
+            document.getElementById('user-wins').innerText = currentUser.wins;
+        }
+
+        function switchTab(type) {
+            const isBalance = type === 'balance';
+            document.getElementById('tab-balance').classList.toggle('active', isBalance);
+            document.getElementById('tab-games').classList.toggle('active', !isBalance);
+            document.getElementById('leaderboard-balance').classList.toggle('hidden', !isBalance);
+            document.getElementById('leaderboard-games').classList.toggle('hidden', isBalance);
+        }
+
+        function renderLeaderboards() {
+            const allUsers = [...mockLeaderboard];
+            if (!allUsers.some(u => u.id === currentUser.id)) allUsers.push(currentUser);
+
+            // Рендер баланса
+            const sortByBalance = [...allUsers].sort((a, b) => b.balance - a.balance);
+            document.getElementById('leaderboard-balance-body').innerHTML = sortByBalance.map((u, i) => `
+                <tr style="${u.id === currentUser.id ? 'background: rgba(112,0,255,0.15);' : ''}">
+                    <td class="rank">${i + 1}</td>
+                    <td style="font-weight: ${u.id === currentUser.id ? '600' : '400'}">${u.first_name} ${u.id === currentUser.id ? '(Вы)' : ''}</td>
+                    <td style="color: var(--success); font-weight: 600;">${u.balance.toLocaleString()} 🪙</td>
+                </tr>
+            `).join('');
+
+            // Рендер побед
+            const sortByGames = [...allUsers].sort((a, b) => b.wins - a.wins);
+            document.getElementById('leaderboard-games-body').innerHTML = sortByGames.map((u, i) => `
+                <tr style="${u.id === currentUser.id ? 'background: rgba(112,0,255,0.15);' : ''}">
+                    <td class="rank">${i + 1}</td>
+                    <td style="font-weight: ${u.id === currentUser.id ? '600' : '400'}">${u.first_name} ${u.id === currentUser.id ? '(Вы)' : ''}</td>
+                    <td style="font-weight: 600;">${u.wins} 🏆</td>
+                </tr>
+            `).join('');
+        }
+
+        // Логика игры
+        let board = [], shipsLeft = 0, gameActive = true, shots = 0;
+
+        function initGame() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            board = Array(25).fill(0);
+            shipsLeft = 3;
+            shots = 0;
+            gameActive = true;
+            
+            document.getElementById('game-status').innerText = "На борту 3 корабля. Откройте огонь!";
+            document.getElementById('game-status').style.color = "var(--text-muted)";
+
+            let placed = 0;
+            while (placed < 3) {
+                let idx = Math.floor(Math.random() * 25);
+                if (board[idx] === 0) { board[idx] = 1; placed++; }
+            }
+
+            for (let i = 0; i < 25; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.dataset.index = i;
+                cell.addEventListener('click', handleShoot);
+                grid.appendChild(cell);
+            }
+        }
+
+        function handleShoot(e) {
+            if (!gameActive) return;
+            const cell = e.target;
+            if (cell.classList.contains('hit') || cell.classList.contains('miss')) return;
+
+            const idx = parseInt(cell.dataset.index);
+            shots++;
+
+            if (board[idx] === 1) {
+                cell.classList.add('hit');
+                shipsLeft--;
+                currentUser.balance += 250;
+                
+                if (shipsLeft === 0) {
+                    gameActive = false;
+                    currentUser.wins += 1;
+                    currentUser.balance += 1000;
+                    document.getElementById('game-status').innerText = `Победа уничтожена за ${shots} ходов! Бонус +1,000 🪙`;
+                    document.getElementById('game-status').style.color = "var(--success)";
+                } else {
+                    document.getElementById('game-status').innerText = `Попадание! Осталось кораблей: ${shipsLeft}`;
+                    document.getElementById('game-status').style.color = "var(--text)";
+                }
+            } else {
+                cell.classList.add('miss');
+                document.getElementById('game-status').innerText = `Мимо. Попыток: ${shots}`;
+            }
+
+            updateUserUI();
+            renderLeaderboards();
+        }
+    </script>
+</body>
+</html>
