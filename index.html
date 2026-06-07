@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=yes, viewport-fit=cover">
+  <title>Royal Spin ⚡</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #0b0c1a 0%, #1a1f3a 100%);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      margin: 0;
+      color: #f0e6d2;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(20, 22, 45, 0.8);
+      backdrop-filter: blur(20px);
+      border-radius: 40px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      box-shadow: 0 25px 50px -8px rgba(0,0,0,0.8), inset 0 0 20px rgba(212,175,55,0.2);
+      padding: 24px 20px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10, 12, 28, 0.6);
+      border-radius: 100px;
+      padding: 10px 18px 10px 14px;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(212,175,55,0.4);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #d4af37, #b4942e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 2px solid #f7e48b;
+      box-shadow: 0 0 18px #d4af3780;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .avatar-placeholder {
+      font-size: 24px;
+      font-weight: bold;
+      color: #0b0c1a;
+    }
+
+    .user-name {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.3px;
+      color: #f5e7c6;
+      text-shadow: 0 0 6px black;
+    }
+
+    .login-btn {
+      background: linear-gradient(180deg, #d4af37, #b4942e);
+      border: none;
+      color: #0b0c1a;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 15px rgba(212,175,55,0.3);
+    }
+
+    .balance-card {
+      background: radial-gradient(circle at 30% 10%, #2e2440, #0f0e1a);
+      border-radius: 30px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid #d4af37;
+      box-shadow: 0 0 30px #d4af3725;
+    }
+
+    .balance-label {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #c4a747;
+    }
+
+    .balance-amount {
+      font-size: 48px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #ffd966;
+      text-shadow: 0 0 12px #ffb347;
+    }
+
+    .star-icon {
+      font-size: 40px;
+      filter: drop-shadow(0 0 8px gold);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+    }
+
+    .nav-btn {
+      flex: 1;
+      background: rgba(30, 25, 50, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid #d4af3750;
+      border-radius: 30px;
+      padding: 14px 0;
+      font-weight: bold;
+      font-size: 16px;
+      color: #e5d5a4;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: linear-gradient(180deg, #2a2540 0%, #18162b 100%);
+    }
+
+    .nav-btn.active {
+      background: #d4af37;
+      color: #0b0c1a;
+      border-color: #f9e076;
+      box-shadow: 0 0 20px #d4af37;
+      font-weight: 800;
+    }
+
+    .panel {
+      background: rgba(0,0,0,0.25);
+      border-radius: 28px;
+      padding: 18px;
+      backdrop-filter: blur(12px);
+      border: 1px solid #d4af3740;
+      min-height: 240px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .top-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .top-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #1b1e33;
+      padding: 10px 16px;
+      border-radius: 60px;
+    }
+
+    .game-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .game-choice {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .choice-btn {
+      font-size: 44px;
+      background: #2b2545;
+      border: 2px solid #d4af37;
+      border-radius: 24px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .choice-btn:active {
+      background: #d4af37;
+      transform: scale(0.95);
+    }
+
+    .tic-tac-toe {
+      display: grid;
+      grid-template-columns: repeat(3, 70px);
+      gap: 10px;
+    }
+
+    .cell {
+      width: 70px;
+      height: 70px;
+      background: #15172e;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      border: 1px solid #d4af37;
+      cursor: pointer;
+    }
+
+    button {
+      background: none;
+      border: none;
+      color: inherit;
+      font-family: inherit;
+    }
+  </style>
+</head>
+<body>
+<div class="app-container" id="app">
+  <div class="profile-header" id="profileHeader">
+    <div class="user-info" id="userInfoDisplay" style="display: none;">
+      <div class="avatar" id="avatarContainer">
+        <img id="avatarImg" src="" alt="Avatar" style="display: none;">
+        <span id="avatarFallback" class="avatar-placeholder">👑</span>
+      </div>
+      <span class="user-name" id="userNameDisplay">Гость</span>
+    </div>
+    <div class="login-btn-area" id="loginWidgetContainer">
+      <button class="login-btn" id="loginButton">🔐 Войти через Telegram</button>
+    </div>
+  </div>
+
+  <div class="balance-card">
+    <div class="balance-label">Royal Balance</div>
+    <div class="balance-amount">
+      <span id="balanceValue">0</span> <span class="star-icon">⭐</span>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn active" id="navProfile">👤 Профиль</button>
+    <button class="nav-btn" id="navTop">🏆 Топ</button>
+    <button class="nav-btn" id="navModes">🎮 Режимы</button>
+  </div>
+
+  <div class="panel" id="panelProfile">
+    <div style="text-align: center; font-size: 18px;">👑 Royal Spin Профиль</div>
+    <div style="margin-top: 16px; color: #d4af37;" id="profileDetails">Войдите через Telegram</div>
+  </div>
+
+  <div class="panel hidden" id="panelTop">
+    <div style="font-weight: bold; margin-bottom: 14px;">🌟 Топ игроков</div>
+    <ul class="top-list" id="topList">
+      <li class="top-item"><span>Загрузка...</span></li>
+    </ul>
+    <div style="margin-top: 10px; font-size:12px; color:#aaa;" id="topUserPosition"></div>
+  </div>
+
+  <div class="panel hidden" id="panelModes">
+    <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 12px;">
+      <button class="nav-btn" id="gameRPS">✂️ Камень-Ножницы</button>
+      <button class="nav-btn" id="gameTicTac">❌⭕ Крестики-нолики</button>
+    </div>
+    <div id="dynamicGameArea" class="game-area"></div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- КОНФИГУРАЦИЯ БАЗЫ ДАННЫХ ----------
+    const DB_CONFIG = {
+      host: 'node1.pghost.ru',
+      port: 15756,
+      database: 'bothost_db_0f4e9694f89c',
+      user: 'bothost_db_0f4e9694f89c',
+      password: 'Xp9i3BN4-YQq_SyFVK0NxvImLPnP7BBF6gjNFDTW5VI'
+    };
+
+    // Прямой URL для REST API PostgreSQL
+    const API_BASE = `https://${DB_CONFIG.host}:${DB_CONFIG.port}`;
+    
+    // Функция для запросов к базе данных через HTTP
+    async function dbQuery(query, params = []) {
+      try {
+        const response = await fetch(`${API_BASE}/query`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Basic ' + btoa(`${DB_CONFIG.user}:${DB_CONFIG.password}`)
+          },
+          body: JSON.stringify({
+            query: query,
+            params: params
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Database error:', error);
+        throw error;
+      }
+    }
+
+    // Инициализация таблиц в базе данных
+    async function initializeDatabase() {
+      const createTables = `
+        CREATE TABLE IF NOT EXISTS users (
+          id BIGINT PRIMARY KEY,
+          first_name TEXT,
+          last_name TEXT,
+          username TEXT,
+          photo_url TEXT,
+          balance INTEGER DEFAULT 5,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        );
+        
+        CREATE TABLE IF NOT EXISTS game_history (
+          id SERIAL PRIMARY KEY,
+          user_id BIGINT REFERENCES users(id),
+          game_type TEXT,
+          result TEXT,
+          balance_change INTEGER,
+          created_at TIMESTAMP DEFAULT NOW()
+        );
+      `;
+      
+      try {
+        await dbQuery(createTables);
+        console.log('Database initialized');
+      } catch (error) {
+        console.log('Tables may already exist');
+      }
+    }
+
+    // ---------- СОСТОЯНИЕ ----------
+    const state = {
+      user: null,
+      balance: 0,
+      topPlayers: [],
+      currentPanel: 'profile',
+    };
+
+    // DOM элементы
+    const userInfoDisplay = document.getElementById('userInfoDisplay');
+    const avatarImg = document.getElementById('avatarImg');
+    const avatarFallback = document.getElementById('avatarFallback');
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const loginWidgetContainer = document.getElementById('loginWidgetContainer');
+    const loginButton = document.getElementById('loginButton');
+    const balanceEl = document.getElementById('balanceValue');
+    const navProfile = document.getElementById('navProfile');
+    const navTop = document.getElementById('navTop');
+    const navModes = document.getElementById('navModes');
+    const panelProfile = document.getElementById('panelProfile');
+    const panelTop = document.getElementById('panelTop');
+    const panelModes = document.getElementById('panelModes');
+    const profileDetails = document.getElementById('profileDetails');
+    const topListEl = document.getElementById('topList');
+    const topUserPosition = document.getElementById('topUserPosition');
+    const dynamicGameArea = document.getElementById('dynamicGameArea');
+    const gameRPSBtn = document.getElementById('gameRPS');
+    const gameTicTacBtn = document.getElementById('gameTicTac');
+
+    // ---------- РАБОТА С БАЗОЙ ДАННЫХ ----------
+    async function getUserFromDB(userId) {
+      const result = await dbQuery('SELECT * FROM users WHERE id = $1', [userId]);
+      return result.rows && result.rows.length > 0 ? result.rows[0] : null;
+    }
+
+    async function createUserInDB(userData) {
+      const result = await dbQuery(
+        'INSERT INTO users (id, first_name, last_name, username, photo_url, balance) VALUES ($1, $2, $3, $4, $5, 5) ON CONFLICT (id) DO UPDATE SET first_name = $2, last_name = $3, username = $4, photo_url = $5 RETURNING *',
+        [userData.id, userData.first_name, userData.last_name || '', userData.username || '', userData.photo_url || '']
+      );
+      return result.rows[0];
+    }
+
+    async function updateBalanceInDB(userId, newBalance) {
+      const result = await dbQuery(
+        'UPDATE users SET balance = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
+        [newBalance, userId]
+      );
+      return result.rows[0];
+    }
+
+    async function getTopPlayersFromDB() {
+      const result = await dbQuery(
+        'SELECT id, first_name, last_name, username, photo_url, balance FROM users ORDER BY balance DESC LIMIT 50'
+      );
+      return result.rows;
+    }
+
+    async function addGameHistory(userId, gameType, result, balanceChange) {
+      await dbQuery(
+        'INSERT INTO game_history (user_id, game_type, result, balance_change) VALUES ($1, $2, $3, $4)',
+        [userId, gameType, result, balanceChange]
+      );
+    }
+
+    // ---------- АВТОРИЗАЦИЯ TELEGRAM ----------
+    async function loginWithTelegram() {
+      // В реальном приложении здесь должен быть Telegram Login Widget
+      // Для демонстрации используем тестовые данные
+      const testUser = {
+        id: Math.floor(Math.random() * 1000000) + 1000000,
+        first_name: 'Игрок',
+        last_name: 'Royal',
+        username: 'royal_player',
+        photo_url: ''
+      };
+      
+      try {
+        const user = await createUserInDB(testUser);
+        state.user = user;
+        state.balance = user.balance;
+        
+        // Загружаем топ игроков
+        await loadTopPlayers();
+        
+        updateUI();
+        console.log('Logged in:', user);
+      } catch (error) {
+        console.error('Login error:', error);
+        alert('Ошибка входа. Попробуйте позже.');
+      }
+    }
+
+    async function loadTopPlayers() {
+      try {
+        const players = await getTopPlayersFromDB();
+        state.topPlayers = players;
+        renderTopList();
+      } catch (error) {
+        console.error('Error loading top players:', error);
+      }
+    }
+
+    // ---------- ФУНКЦИИ ОТОБРАЖЕНИЯ ----------
+    function updateUI() {
+      balanceEl.textContent = state.balance;
+
+      if (state.user) {
+        userInfoDisplay.style.display = 'flex';
+        loginWidgetContainer.style.display = 'none';
+        userNameDisplay.textContent = state.user.first_name || 'Игрок';
+        
+        if (state.user.photo_url) {
+          avatarImg.src = state.user.photo_url;
+          avatarImg.style.display = 'block';
+          avatarFallback.style.display = 'none';
+        } else {
+          avatarImg.style.display = 'none';
+          avatarFallback.style.display = 'flex';
+          avatarFallback.textContent = (state.user.first_name || 'R')[0].toUpperCase();
+        }
+        
+        profileDetails.innerHTML = `
+          Имя: ${state.user.first_name || ''} ${state.user.last_name || ''}<br>
+          Username: @${state.user.username || 'нет'}<br>
+          ID: ${state.user.id}<br>
+          Баланс: ${state.balance}⭐
+        `;
+      } else {
+        userInfoDisplay.style.display = 'none';
+        loginWidgetContainer.style.display = 'flex';
+        profileDetails.innerHTML = 'Войдите через Telegram, чтобы сохранить прогресс.';
+      }
+
+      renderTopList();
+      updatePanelVisibility();
+    }
+
+    function renderTopList() {
+      if (state.topPlayers.length === 0) {
+        topListEl.innerHTML = '<li class="top-item"><span>Нет игроков</span></li>';
+        return;
+      }
+
+      topListEl.innerHTML = state.topPlayers.map((p, idx) => {
+        let medal = '';
+        if (idx === 0) medal = '🥇';
+        else if (idx === 1) medal = '🥈';
+        else if (idx === 2) medal = '🥉';
+        else medal = '👑';
+        
+        const name = p.first_name || p.username || 'Аноним';
+        return `<li class="top-item"><span>${medal} ${name}</span> <span>${p.balance}⭐</span></li>`;
+      }).join('');
+
+      if (state.user) {
+        const currentUserInTop = state.topPlayers.findIndex(p => p.id === state.user.id);
+        if (currentUserInTop !== -1) {
+          topUserPosition.textContent = `Ваше место: ${currentUserInTop + 1} (${state.topPlayers[currentUserInTop].balance}⭐)`;
+        } else {
+          topUserPosition.textContent = 'Вы пока не в топе. Играйте больше!';
+        }
+      } else {
+        topUserPosition.textContent = 'Войдите, чтобы участвовать в рейтинге.';
+      }
+    }
+
+    function updatePanelVisibility() {
+      panelProfile.classList.add('hidden');
+      panelTop.classList.add('hidden');
+      panelModes.classList.add('hidden');
+      navProfile.classList.remove('active');
+      navTop.classList.remove('active');
+      navModes.classList.remove('active');
+
+      if (state.currentPanel === 'profile') {
+        panelProfile.classList.remove('hidden');
+        navProfile.classList.add('active');
+      } else if (state.currentPanel === 'top') {
+        panelTop.classList.remove('hidden');
+        navTop.classList.add('active');
+        loadTopPlayers(); // Обновляем топ при открытии
+      } else if (state.currentPanel === 'modes') {
+        panelModes.classList.remove('hidden');
+        navModes.classList.add('active');
+      }
+    }
+
+    // Обновление баланса
+    async function updateBalance(delta) {
+      if (!state.user) {
+        alert('Сначала войдите в игру!');
+        return false;
+      }
+
+      const newBalance = Math.max(0, state.balance + delta);
+      
+      try {
+        const updatedUser = await updateBalanceInDB(state.user.id, newBalance);
+        if (updatedUser) {
+          state.balance = updatedUser.balance;
+          state.user = updatedUser;
+          updateUI();
+          return true;
+        }
+      } catch (error) {
+        console.error('Error updating balance:', error);
+        alert('Ошибка обновления баланса');
+      }
+      return false;
+    }
+
+    // ---------- НАВИГАЦИЯ ----------
+    navProfile.addEventListener('click', () => {
+      state.currentPanel = 'profile';
+      updatePanelVisibility();
+    });
+    
+    navTop.addEventListener('click', () => {
+      state.currentPanel = 'top';
+      updatePanelVisibility();
+    });
+    
+    navModes.addEventListener('click', () => {
+      state.currentPanel = 'modes';
+      updatePanelVisibility();
+      renderRPSGame(); // По умолчанию показываем RPS
+    });
+
+    // ---------- ИГРЫ ----------
+    function renderRPSGame() {
+      dynamicGameArea.innerHTML = `
+        <div style="font-weight:bold; font-size: 18px;">Камень, ножницы, бумага</div>
+        <div class="game-choice">
+          <button class="choice-btn" data-choice="rock">🪨</button>
+          <button class="choice-btn" data-choice="scissors">✂️</button>
+          <button class="choice-btn" data-choice="paper">📄</button>
+        </div>
+        <div id="rpsResult" style="font-size:18px; margin-top:10px; text-align: center;">Выберите вариант</div>
+      `;
+      
+      document.querySelectorAll('.choice-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          if (!state.user) {
+            alert('Сначала войдите!');
+            return;
+          }
+          
+          const playerChoice = e.currentTarget.dataset.choice;
+          const botChoice = getSmartBotChoice();
+          const result = determineRPSWinner(playerChoice, botChoice);
+          
+          let message = `Вы: ${emojiRPS(playerChoice)} vs Бот: ${emojiRPS(botChoice)} → `;
+          let balanceChange = 0;
+          
+          if (result === 'win') {
+            message += 'Победа! +1⭐';
+            balanceChange = 1;
+          } else if (result === 'lose') {
+            message += 'Поражение... -1⭐';
+            balanceChange = -1;
+          } else {
+            message += 'Ничья';
+          }
+          
+          document.getElementById('rpsResult').textContent = message;
+          
+          if (balanceChange !== 0) {
+            await updateBalance(balanceChange);
+            await addGameHistory(state.user.id, 'rps', result, balanceChange);
+          }
+        });
+      });
+    }
+
+    function getSmartBotChoice() {
+      // Бот старается победить, анализируя паттерны
+      const choices = ['rock', 'scissors', 'paper'];
+      // 70% шанс выбрать выигрышный вариант против случайного выбора
+      if (Math.random() < 0.7) {
+        // Предполагаем, что игрок выберет случайный вариант
+        const predictedPlayerChoice = choices[Math.floor(Math.random() * choices.length)];
+        // Выбираем то, что побеждает предсказанный выбор игрока
+        if (predictedPlayerChoice === 'rock') return 'paper';
+        if (predictedPlayerChoice === 'scissors') return 'rock';
+        if (predictedPlayerChoice === 'paper') return 'scissors';
+      }
+      // 30% случайный выбор
+      return choices[Math.floor(Math.random() * choices.length)];
+    }
+
+    function determineRPSWinner(player, bot) {
+      if (player === bot) return 'draw';
+      if ((player === 'rock' && bot === 'scissors') ||
+          (player === 'scissors' && bot === 'paper') ||
+          (player === 'paper' && bot === 'rock')) {
+        return 'win';
+      }
+      return 'lose';
+    }
+
+    function emojiRPS(choice) {
+      if (choice === 'rock') return '🪨';
+      if (choice === 'scissors') return '✂️';
+      return '📄';
+    }
+
+    // Крестики-нолики
+    function renderTicTacToe() {
+      if (!state.user) {
+        dynamicGameArea.innerHTML = '<div style="text-align: center;">Сначала войдите в игру!</div>';
+        return;
+      }
+      
+      let board = Array(9).fill(null);
+      let gameOver = false;
+      const human = '❌';
+      const bot = '⭕';
+
+      function checkWinner(b) {
+        const lines = [
+          [0,1,2],[3,4,5],[6,7,8],
+          [0,3,6],[1,4,7],[2,5,8],
+          [0,4,8],[2,4,6]
+        ];
+        for (let line of lines) {
+          const [a,bC,c] = line;
+          if (b[a] && b[a] === b[bC] && b[a] === b[c]) return b[a];
+        }
+        return b.every(cell => cell !== null) ? 'draw' : null;
+      }
+
+      function getBestMove() {
+        const emptyIndices = board.map((val, idx) => val === null ? idx : null).filter(v => v !== null);
+        if (emptyIndices.length === 0) return null;
+        
+        // Проверка победного хода для бота
+        for (let idx of emptyIndices) {
+          board[idx] = bot;
+          if (checkWinner(board) === bot) {
+            board[idx] = null;
+            return idx;
+          }
+          board[idx] = null;
+        }
+        
+        // Блокировка победного хода игрока
+        for (let idx of emptyIndices) {
+          board[idx] = human;
+          if (checkWinner(board) === human) {
+            board[idx] = null;
+            return idx;
+          }
+          board[idx] = null;
+        }
+        
+        // Центр
+        if (emptyIndices.includes(4)) return 4;
+        
+        // Углы
+        const corners = [0, 2, 6, 8].filter(i => emptyIndices.includes(i));
+        if (corners.length > 0) return corners[Math.floor(Math.random() * corners.length)];
+        
+        // Любая доступная клетка
+        return emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+      }
+
+      async function handleCellClick(index) {
+        if (gameOver || board[index] !== null) return;
+        
+        board[index] = human;
+        renderBoard();
+        
+        const winner = checkWinner(board);
+        if (winner) {
+          gameOver = true;
+          await handleGameEnd(winner);
+          return;
+        }
+        
+        // Ход бота
+        const botIndex = getBestMove();
+        if (botIndex !== null) {
+          board[botIndex] = bot;
+          renderBoard();
+          
+          const winnerAfterBot = checkWinner(board);
+          if (winnerAfterBot) {
+            gameOver = true;
+            await handleGameEnd(winnerAfterBot);
+          }
+        }
+      }
+
+      async function handleGameEnd(winner) {
+        let balanceChange = 0;
+        let result = '';
+        
+        if (winner === human) {
+          balanceChange = 2;
+          result = 'win';
+          dynamicGameArea.innerHTML += '<div style="margin-top:10px; color: #4CAF50;">Вы выиграли! +2⭐</div>';
+        } else if (winner === bot) {
+          balanceChange = -1;
+          result = 'lose';
+          dynamicGameArea.innerHTML += '<div style="margin-top:10px; color: #f44336;">Бот победил... -1⭐</div>';
+        } else if (winner === 'draw') {
+          result = 'draw';
+          dynamicGameArea.innerHTML += '<div style="margin-top:10px; color: #FFC107;">Ничья</div>';
+        }
+        
+        if (balanceChange !== 0) {
+          await updateBalance(balanceChange);
+        }
+        await addGameHistory(state.user.id, 'tictactoe', result, balanceChange);
+        
+        setTimeout(() => renderTicTacToe(), 2000);
+      }
+
+      function renderBoard() {
+        dynamicGameArea.innerHTML = `
+          <div style="font-weight:bold; font-size: 18px;">Крестики-нолики (Вы: ${human})</div>
+          <div class="tic-tac-toe" id="tttGrid">
+            ${board.map((val, i) => `<div class="cell" data-index="${i}">${val || ''}</div>`).join('')}
+          </div>
+        `;
+        
+        document.querySelectorAll('.cell').forEach(cell => {
+          cell.addEventListener('click', (e) => {
+            const index = parseInt(e.currentTarget.dataset.index, 10);
+            handleCellClick(index);
+          });
+        });
+      }
+      
+      renderBoard();
+    }
+
+    gameRPSBtn.addEventListener('click', () => {
+      renderRPSGame();
+    });
+    
+    gameTicTacBtn.addEventListener('click', () => {
+      renderTicTacToe();
+    });
+
+    // ---------- ИНИЦИАЛИЗАЦИЯ ----------
+    loginButton.addEventListener('click', loginWithTelegram);
+
+    async function init() {
+      await initializeDatabase();
+      updateUI();
+      
+      // Автоматическая загрузка топа при запуске
+      try {
+        await loadTopPlayers();
+      } catch (error) {
+        console.log('Top players will load after login');
+      }
+    }
+
+    // Запуск приложения
+    init();
+
+    // Периодическое обновление топа
+    setInterval(async () => {
+      if (state.currentPanel === 'top') {
+        await loadTopPlayers();
+      }
+    }, 30000); // Каждые 30 секунд
+
+  })();
+</script>
+</body>
+</html>
